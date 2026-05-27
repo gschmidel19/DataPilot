@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-from app.audit.quality_metrics import calculate_quality_metrics
-from app.ai.insight_generator import generate_insights
+from audit.quality_metrics import calculate_quality_metrics
+from ai.insight_generator import generate_insights
+from cleaning.data_cleaner import remove_duplicates
 
 # =====================================
 # Page Config
@@ -20,6 +21,12 @@ st.set_page_config(
 
 st.title("🚀 DataPilot")
 st.subheader("AI Copilot for Data Auditing")
+
+# =====================================
+# Sidebar
+# =====================================
+
+st.sidebar.title("🧹 Data Cleaning Actions")
 
 # =====================================
 # File Upload
@@ -40,6 +47,18 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
     st.success("Dataset loaded successfully!")
+
+    # =====================================
+    # Cleaning Actions
+    # =====================================
+
+    if st.sidebar.button("Remove Duplicates"):
+
+        df, removed_rows = remove_duplicates(df)
+
+        st.sidebar.success(
+            f"{removed_rows} duplicate rows removed!"
+        )
 
     # =====================================
     # Dataset Preview
